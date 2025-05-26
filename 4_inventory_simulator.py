@@ -1,59 +1,70 @@
 # Inventory System Simulator
 
-inventory = {}
+inventory = [
+    {'name': 'iPhone 14 Pro', 'quantity': 15, 'price': 999.99},
+    {'name': 'MacBook Pro 16"', 'quantity': 10, 'price': 2499.99},
+    {'name': 'PlayStation 5', 'quantity': 8, 'price': 499.99},
+    {'name': 'Samsung Galaxy S23', 'quantity': 20, 'price': 899.99},
+    {'name': 'Apple Watch Series 8', 'quantity': 25, 'price': 399.99},
+    {'name': 'Sony WH-1000XM5', 'quantity': 30, 'price': 349.99},
+    {'name': 'Dell XPS 13', 'quantity': 12, 'price': 1199.99},
+    {'name': 'GoPro HERO11', 'quantity': 18, 'price': 449.99},
+    {'name': 'Amazon Echo Dot', 'quantity': 40, 'price': 49.99},
+    {'name': 'Nintendo Switch OLED', 'quantity': 15, 'price': 349.99}
+]
 
 def add_product(name, quantity, price):
-    if name in inventory:
-        print(f"{name} is already in inventory.")
-    else:
-        inventory[name] = {'quantity': quantity, 'price': price}
-        print(f"Added {name} with quantity {quantity} and price {price}.")
+    for product in inventory:
+        if product['name'] == name:
+            print(f"Product '{name}' already exists. Use restock to add quantity.")
+            return
+    inventory.append({'name': name, 'quantity': quantity, 'price': price})
+    print(f"Added product '{name}' with quantity {quantity} and price {price}.")
 
 def restock_product(name, quantity):
-    if name in inventory:
-        inventory[name]['quantity'] += quantity
-        print(f"Restocked {name}. New quantity: {inventory[name]['quantity']}")
-    else:
-        print(f"{name} is not in inventory.")
+    for product in inventory:
+        if product['name'] == name:
+            product['quantity'] += quantity
+            print(f"Restocked '{name}'. New quantity: {product['quantity']}")
+            return
+    print(f"Product '{name}' not found in inventory.")
 
 def purchase_product(name, quantity):
-    if name in inventory:
-        if inventory[name]['quantity'] >= quantity:
-            inventory[name]['quantity'] -= quantity
-            cost = quantity * inventory[name]['price']
-            print(f"Purchased {quantity} of {name}. Cost: ${cost:.2f}")
-        else:
-            print(f"Not enough {name} in stock. Current quantity: {inventory[name]['quantity']}")
-    else:
-        print(f"{name} is not in inventory.")
+    for product in inventory:
+        if product['name'] == name:
+            if product['quantity'] >= quantity:
+                product['quantity'] -= quantity
+                total_price = quantity * product['price']
+                print(f"Purchased {quantity} of '{name}' for ${total_price:.2f}. Remaining quantity: {product['quantity']}")
+            else:
+                print(f"Insufficient quantity for '{name}'. Only {product['quantity']} left.")
+            return
+    print(f"Product '{name}' not found in inventory.")
 
 def total_inventory_value():
     total = 0
-    for product in inventory.values():
+    for product in inventory:
         total += product['quantity'] * product['price']
     return total
 
-# Example usage - adding 10 products
-add_product("Laptop", 5, 800)
-add_product("Smartphone", 10, 500)
-add_product("Headphones", 15, 50)
-add_product("Keyboard", 7, 30)
-add_product("Mouse", 20, 25)
-add_product("Monitor", 8, 150)
-add_product("Printer", 3, 120)
-add_product("Tablet", 6, 300)
-add_product("USB Cable", 50, 5)
-add_product("External Hard Drive", 4, 100)
+def print_inventory():
+    print("\nCurrent Inventory:")
+    if not inventory:
+        print("Inventory is empty.")
+        return
+    print(f"{'Name':<25}{'Quantity':<10}{'Price':<10}")
+    for product in inventory:
+        print(f"{product['name']:<25}{product['quantity']:<10}{product['price']:<10.2f}")
+    print(f"Total inventory value: ${total_inventory_value():.2f}\n")
 
-# Restock more products with bigger amounts
-restock_product("Laptop", 10)
-restock_product("USB Cable", 40)
-restock_product("Monitor", 15)
 
-# Purchase more products
-purchase_product("Smartphone", 8)
-purchase_product("Monitor", 10)
-purchase_product("Mouse", 15)
-purchase_product("Headphones", 10)
+# Simulate some sales and restocks to show activity:
+purchase_product('iPhone 14 Pro', 5)
+purchase_product('PlayStation 5', 3)
+restock_product('PlayStation 5', 10)
+purchase_product('Amazon Echo Dot', 15)
+restock_product('Amazon Echo Dot', 20)
+purchase_product('MacBook Pro 16"', 2)
+purchase_product('GoPro HERO11', 10)
 
-print(f"Total inventory value: ${total_inventory_value():.2f}")
+print_inventory()
